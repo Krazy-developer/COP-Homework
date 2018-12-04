@@ -1,0 +1,200 @@
+//Deamonte Irving
+//COP2000 
+//HW 4
+#include <iostream>
+#include <iomanip>
+#include <cstdlib>
+using namespace std;
+
+//Function Protocols
+int beginGame(int CurrentBoard[]);    
+bool testWinner(int, int, int[]);	  
+void instructions();             
+void displayBoard(int Game_Board[][3]);   
+
+
+int main()
+{
+	//Variables
+	int Winning_Number[3] = { 14, 15, 8 };       
+	int PlayingBoard[3] = { 0 };				
+	int User_Answer;                  
+	int Number_Of_Wins = 0;          
+	int Number_Of_Guesses = 0;     
+	int Board_Number;   
+	bool Champion;       
+
+	//Game Boards
+	int board0[4][3] = { {90, 9, 45,},   
+						{66, 12, 48 },
+						{34, 7, 70 },
+						{44, 0, 26 } };
+
+	int board1[4][3] = { { 90, 9, 45, }, 
+						 { 66, 12, 48 },
+						 { 34, 7, 70 },
+						 { 44, 0, 26 } };
+
+	int board2[4][3] = { { 90, 9, 45, }, 
+						 { 66, 12, 48 },
+						 { 34, 7, 70 },
+						 { 44, 0, 26 } };
+	
+	//Format Display
+	cout << setprecision(2) << fixed << showpoint;   
+
+	//Calling Function
+	instructions();            
+	beginGame(PlayingBoard);   
+
+	do
+	{
+		Board_Number = beginGame(PlayingBoard);  
+		Number_Of_Guesses = 0;  
+
+		do   
+		{
+
+			switch (Board_Number)  
+			{
+				
+			case 0:
+				displayBoard(board0);
+				break;
+			case 1:
+				displayBoard(board1);
+				break;
+			case 2:
+				displayBoard(board2);
+				break;
+			}
+
+
+			cout << "Enter Guess or 0 to Exit >>";
+
+			cin >> User_Answer;      
+
+			while (User_Answer < 0)   
+			{
+				cout << "Enter a number greater than 0 and try again.";
+				cin >> User_Answer;
+			}
+
+			if (User_Answer == 0)
+			{
+				cout << "Thank you for playing, have a nice day";
+				return 0;
+			}
+
+			Champion = testWinner(User_Answer, Board_Number, Winning_Number);
+
+			{
+				if (Champion)
+				{  
+					Number_Of_Wins += 1;
+					PlayingBoard[Board_Number] = 1;
+
+					 
+					if (Number_Of_Wins == 3)
+					{
+						cout << "*** You are the number guessing champion!! CONGRATULATIONS!! *** " << endl;
+						return 0;
+					}
+					cout << "Do you wish to play Again? Enter 0 to Exit, or any number to continue...\n";
+					cin >> User_Answer;
+
+					if (User_Answer == 0)
+					{
+						cout << "Thank you for playing, have a nice day";
+						return 0;
+					}
+
+
+				}
+				 
+				else
+				{
+					Number_Of_Guesses += 1;
+				}
+			}
+
+		} while (Champion != true && Number_Of_Guesses < 3);
+
+		if (Number_Of_Guesses == 3)
+		{
+			cout << "Sorry... You are out of Guesses...\n";
+			cout << "Do you wish to play again? Enter 0 to Exit, or any number to continue...\n";
+			cin >> User_Answer;
+
+			if (User_Answer == 0)
+			{
+				cout << "Thank you for playing, have a nice day";
+				return 0;
+			}
+		}
+
+
+
+	} while (Number_Of_Wins < 3);
+
+}
+
+int beginGame(int CurrentBoard[])
+{
+	int Random_Number;
+	srand(time(0));
+	do
+	{
+		Random_Number = (rand() % (2 - 0 + 1)) + 0;
+		
+		if (CurrentBoard[Random_Number] == 0)
+			return Random_Number;
+	}
+	 
+	while (CurrentBoard[Random_Number] != 0);
+
+
+}
+
+void displayBoard(int Game_Board[][3])
+{
+	int Rows = 4;
+	int Columns = 3;
+	 
+	for (int x = 0; x < Rows; x++)
+	{
+		for (int y = 0; y < Columns; y++)
+		{
+			if (Game_Board[x][y] == 0)   
+				cout << setw(8) << "0";
+			else
+				cout << setw(8) << Game_Board[x][y];
+		}
+		cout << endl;
+	}
+}
+
+bool testWinner(int User_Answer, int Board_Number, int WinningNumber[])
+{	 
+	if (User_Answer == WinningNumber[Board_Number])
+	{
+		cout << "You are a number genius!!\n" << endl;
+		return true;
+	}
+	else
+	{
+		cout << "I am sorry that was incorrect...\n" << endl;
+		return false;
+	}
+}
+
+void instructions()
+{
+	cout << " ******************************************************************" << endl;
+	cout << "                           MISSING NUMBERS GAME                    " << endl;
+	cout << "                              A fun brain game....                 " << endl;
+	cout << "                                                                   " << endl;
+	cout << "     Please Enter a whole number to guess the missing number...    " << endl;
+	cout << "         Program Developed by : Deamonte Irving					" << endl;
+	cout << " ******************************************************************" << endl;
+}
